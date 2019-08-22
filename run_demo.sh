@@ -1,4 +1,4 @@
 #!/bin/sh
-pytest -vs --browser "firefox" --url "http://127.0.0.1"
-pytest -vs --browser "chrome" --url "http://127.0.0.1"
-pytest -vs --browser "opera" --url "http://127.0.0.1"
+pytest -vs --browser "firefox" --url "https://demo.opencart.com/"
+pytest -vs --browser "chrome" --url "https://demo.opencart.com/"
+pytest -vs --browser "opera" --url "https://demo.opencart.com/"

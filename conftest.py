@@ -3,6 +3,7 @@ import sys
 from selenium import webdriver
 from selenium.webdriver.common import desired_capabilities
 from selenium.webdriver.opera import options as options_oper
+from selenium.webdriver.chrome.options import Options as options_chr
 import pytest
 
 
@@ -22,6 +23,7 @@ def pytest_addoption(parser):
         help="Browser name"
     )
 
+
 @pytest.fixture(scope="session")
 def url_f(request):
     """
@@ -33,25 +35,82 @@ def url_f(request):
     return url
 
 
+@pytest.fixture(params=["chrome", "safari", "firefox"])
+def parametrized_browser(request):
+    """
+    Фикстура автоматом подхватывающая УРЛ из парсера.. и позволяющая одним тестом запускать 3 браузера
+    :param request:
+    :return:
+    """
+    browser_param = request.param
+    if browser_param == "chrome":
+        driver = webdriver.Chrome()
+    elif browser_param == "firefox":
+        driver = webdriver.Firefox()
+    elif browser_param == "opera":
+        opera_driver_loc = os.path.abspath('/usr/bin/operadriver')
+        opera_exe_loc = os.path.abspath('/usr/bin/opera')
+        opera_caps = desired_capabilities.DesiredCapabilities.OPERA.copy()
+        opera_opts = options_oper.ChromeOptions()
+        opera_opts._binary_location = opera_exe_loc
+        wd = webdriver.Chrome(executable_path=opera_driver_loc, options=opera_opts,
+                              desired_capabilities=opera_caps)
+    else:
+        raise Exception(f"{request.param} is not supported!")
+
+    driver.implicitly_wait(20)
+    request.addfinalizer(driver.quit)
+    driver.get(request.config.getoption("--url"))
+    return driver
+
+
+
+@pytest.fixture
+def browser(request):
+    browser_param = request.config.getoption("--browser")
+    if browser_param == "chrome":
+        driver = webdriver.Chrome()
+    elif browser_param == "firefox":
+        driver = webdriver.Firefox()
+    elif browser_param == "opera":
+        opera_driver_loc = os.path.abspath('/usr/bin/operadriver')
+        opera_exe_loc = os.path.abspath('/usr/bin/opera')
+        opera_caps = desired_capabilities.DesiredCapabilities.OPERA.copy()
+        opera_opts = options_oper.ChromeOptions()
+        opera_opts._binary_location = opera_exe_loc
+        wd = webdriver.Chrome(executable_path=opera_driver_loc, options=opera_opts,
+                              desired_capabilities=opera_caps)
+    else:
+        raise Exception(f"{request.param} is not supported!")
+
+    driver.implicitly_wait(20)
+    request.addfinalizer(driver.close)
+    driver.get(request.config.getoption("--url"))
+
+    return driver
+
+
+
+
 
 @pytest.fixture(scope="session")
-def driver(request):
+def driver_headlessed(request):
     '''
-    фикстура для запуска браузера
+    фикстура для запуска браузера в режиме headless
     :param request:
-    :return wd:
+    :return wd: возвращает вебдрайвер
     '''
     print("im in fixture")
     browser = request.config.getoption("--browser")
     if browser == 'firefox':
         firefox_opts = webdriver.FirefoxOptions()
         firefox_opts.add_argument("--headless")
-        wd = webdriver.Firefox(options=firefox_opts)
+        wd = webdriver.Firefox()
     elif browser == 'chrome':
-        chrome_opts = webdriver.ChromeOptions()
+        chrome_opts = options_chr()
         chrome_opts.add_argument("--headless")
         chrome_opts.add_argument("--disable-gpu")
-        chrome_opts.add_argument("--start-fullscreen")
+        chrome_opts.add_argument("--no-sandbox")
         wd = webdriver.Chrome(options=chrome_opts)
     elif browser == 'opera':
         opera_driver_loc = os.path.abspath('/usr/bin/operadriver')
