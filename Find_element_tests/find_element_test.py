@@ -3,7 +3,7 @@ from locators.MainPage import MainPage
 from locators.SearchPage import SearchPage
 from locators.ProductPage import ProductPage
 from locators.RegisterPage import RegisterPage
-from locators.CatalogPage import CatalogPage
+from locators.AdmMainPage import CatalogPage
 
 
 def test_search(browser):
@@ -23,7 +23,7 @@ def test_search(browser):
     browser.find_element_by_class_name(MainPage.search_button_class_name).click()
     found_search_elms = browser.find_elements_by_class_name(SearchPage.search_div_elems_class_name)
     for elm in found_search_elms:
-        caption = elm.find_element_by_class_name("caption")
+        caption = elm.find_element_by_class_name(CatalogPage.catalog_class_name)
         assert test_data in caption.find_element_by_tag_name("a").text
 
 
@@ -40,7 +40,7 @@ def test_alert_wishlist(browser):
     """
     browser.find_element_by_xpath(MainPage.promo_element_xpath).click()
     browser.find_element_by_xpath(ProductPage.add_wishlist_xpath).click()
-    ActionChains(browser).pause(0.5).perform()
+    ActionChains(browser).pause(0.5).perform()#хром слишком быстро пытался найти алерт..заставил подождать
     browser.find_element_by_class_name(ProductPage.alert_success_class_name)
 
 
@@ -58,7 +58,7 @@ def test_catalog_items(browser):
     """
     menu = browser.find_element_by_id(MainPage.menu_id)
     menu.find_element_by_link_text("Phones & PDAs").click()
-    products = browser.find_elements_by_class_name(CatalogPage.product_cl_nm)
+    products = browser.find_elements_by_class_name(CatalogPage.product_class_name)
     for product in products:
         ActionChains(browser).move_to_element(product).pause(2).perform()
 
