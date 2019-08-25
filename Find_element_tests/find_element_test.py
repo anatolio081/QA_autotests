@@ -2,12 +2,11 @@ from selenium.webdriver.common.action_chains import ActionChains
 from locators.MainPage import MainPage
 from locators.SearchPage import SearchPage
 from locators.ProductPage import ProductPage
-import time
+from locators.RegisterPage import RegisterPage
+from locators.CatalogPage import CatalogPage
 
-def wait():
-    time.sleep(1)
 
-def test_element_by_class_name_selector(browser):
+def test_search(browser):
     """
     проверка тестовой выборки в поиске
     шаги:
@@ -28,24 +27,24 @@ def test_element_by_class_name_selector(browser):
         assert test_data in caption.find_element_by_tag_name("a").text
 
 
-def test_element_by_xpath(browser):
+def test_alert_wishlist(browser):
     """
     Проверка появления алерт-div блока при добавлении в желаемое
     шаги:
     1.Нажать на первое изображение товара
     2.Нажать на кнопку 'добавить в favorites'
     3.Проверить появление алерта
+    Ожидаемый результат:Алерт появился
     :param browser:
     :return:
     """
     browser.find_element_by_xpath(MainPage.promo_element_xpath).click()
     browser.find_element_by_xpath(ProductPage.add_wishlist_xpath).click()
-    browser.find_element_by_xpath("//div[@class='alert,alert alert-success alert-dismissible']")#непонятно почему нельзя обратиться по классу через xpath
-    #Ведь в нем появляется такой блок <div class="alert alert-success alert-dismissible">
-    browser.find_element_by_class_name("alert-success")#но таким способом получается нормально
+    ActionChains(browser).pause(0.5).perform()
+    browser.find_element_by_class_name(ProductPage.alert_success_class_name)
 
 
-def test_element_by_id(browser):
+def test_catalog_items(browser):
     """
     Проверка наличия Div блоков с товарами в разделе, в который они добавлены
     Предусловия:в каталог добавлены товары типа Phones & PDAs
@@ -53,25 +52,25 @@ def test_element_by_id(browser):
     1.Найти меню
     2.Нажать на элемент по текстовому линку Phones & PDAs
     3.Проверить наличие DIV блоков с товарами и возможность наведения на них
+    Ожидаемый результат:Присутствуют Div блоки с товарами, и курсор на них наводится
     :param browser:
     :return:
     """
     menu = browser.find_element_by_id(MainPage.menu_id)
     menu.find_element_by_link_text("Phones & PDAs").click()
-    products = browser.find_elements_by_class_name("product-thumb")
+    products = browser.find_elements_by_class_name(CatalogPage.product_cl_nm)
     for product in products:
         ActionChains(browser).move_to_element(product).pause(2).perform()
 
 
-
-
-def test_element_by_link_text(browser):
+def test_laptop_link(browser):
     """
     шаги:
     1.Найти раздел с Laptops & Notebooks
     2.Раскрыть выпадающий список с ссылками
     3.Зайти на страницу каталога
     4.Сверить то, что мы попали действительно на нужную страницу каталога по её заголовку
+    Ожидаемый результат:Переход на страницу с каталогом ноутбуков произведен успешно
     :param browser:
     :return:
     """
@@ -82,23 +81,29 @@ def test_element_by_link_text(browser):
     assert h2.text == "Laptops & Notebooks"
 
 
-
-def test_elements_by_css_selector(browser):
-    top_right_links = browser.find_element_by_css_selector("ul.pull-right")
+def test_register_form(browser):
+    """Проверка возможности ввода данных в форму регистрации
+       шаги:
+       1.На главной странице в правом верхнем углу экрана найти кнопку "My Account" и кликнуть на неё
+       2.В выпавшем списке нажать на кнопку Register
+       3.Ввести валидные данные для регистрации
+       Ожидаемый результат:Данные введены
+       :param browser:
+       :return:
+       """
+    top_right_links = browser.find_element_by_css_selector(MainPage.topright_menu_cssSel)
     top_right_links.find_element_by_xpath("//a[@title='My Account']").click()
     browser.find_element_by_link_text("Register").click()
-    content = browser.find_element_by_id("content")
-    a = content.find_element_by_id("account")
-    inputs = a.find_element_by_tag_name("input")
-    inputs.click()
-    #inputs.send_keys("111")
-    print(inputs.tag_name)
-
-
-
-
-
-
-    #content = browser.find_element_by_css_selector(SearchPage.content_css_class)
-    #h1 = content.find_element_by_tag_name("h1")
-    #assert h1.text == "Search"
+    content = browser.find_element_by_id(RegisterPage.content_id)
+    first_name_input = content.find_element_by_id(RegisterPage.firstname_input_id)
+    first_name_input.send_keys("vasya")
+    last_name_input = content.find_element_by_id(RegisterPage.lastname_input_id)
+    last_name_input.send_keys("bzdonsky")
+    email_input = content.find_element_by_id(RegisterPage.email_input_id)
+    email_input.send_keys("bzdon@gmail.com")
+    telephone_input = content.find_element_by_id(RegisterPage.telephone_input_id)
+    telephone_input.send_keys("+71112221122")
+    password_input = content.find_element_by_id(RegisterPage.pass_input_id)
+    password_input.send_keys("12345678")
+    confirm_input = content.find_element_by_id(RegisterPage.confirm_input_id)
+    confirm_input.send_keys("12345678")

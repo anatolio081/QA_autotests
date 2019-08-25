@@ -19,7 +19,7 @@ def pytest_addoption(parser):
     parser.addoption(
         "--browser",
         action="store",
-        default="firefox",
+        default="opera",
         help="Browser name"
     )
 
@@ -58,18 +58,28 @@ def parametrized_browser(request):
     else:
         raise Exception(f"{request.param} is not supported!")
 
-    driver.implicitly_wait(20)
     request.addfinalizer(driver.quit)
     driver.get(request.config.getoption("--url"))
     return driver
 
 
-
 @pytest.fixture
 def browser(request):
+    '''
+     фикстура для запуска браузера
+     для домашки по поиску элементов
+     :param request:
+     :return wd: возвращает вебдрайвер
+     '''
     browser_param = request.config.getoption("--browser")
     if browser_param == "chrome":
-        driver = webdriver.Chrome()
+        chrome_driver_loc = os.path.abspath('/usr/bin/chromedriver')
+        chrome_exe_loc = os.path.abspath('/usr/bin/google-chrome-stable')
+        chrome_caps = desired_capabilities.DesiredCapabilities.CHROME.copy()
+        chrome_opts = options_oper.ChromeOptions()
+        chrome_opts._binary_location=chrome_exe_loc
+        driver = webdriver.Chrome(executable_path=chrome_driver_loc, options=chrome_opts,
+                                  desired_capabilities=chrome_caps)
     elif browser_param == "firefox":
         driver = webdriver.Firefox()
     elif browser_param == "opera":
@@ -78,29 +88,24 @@ def browser(request):
         opera_caps = desired_capabilities.DesiredCapabilities.OPERA.copy()
         opera_opts = options_oper.ChromeOptions()
         opera_opts._binary_location = opera_exe_loc
-        wd = webdriver.Chrome(executable_path=opera_driver_loc, options=opera_opts,
+        driver = webdriver.Chrome(executable_path=opera_driver_loc, options=opera_opts,
                               desired_capabilities=opera_caps)
     else:
         raise Exception(f"{request.param} is not supported!")
 
-    driver.implicitly_wait(20)
     request.addfinalizer(driver.close)
     driver.get(request.config.getoption("--url"))
-
     return driver
-
-
-
 
 
 @pytest.fixture(scope="session")
 def driver_headlessed(request):
     '''
     фикстура для запуска браузера в режиме headless
+    для домашки по запуску браузеров
     :param request:
     :return wd: возвращает вебдрайвер
     '''
-    print("im in fixture")
     browser = request.config.getoption("--browser")
     if browser == 'firefox':
         firefox_opts = webdriver.FirefoxOptions()
