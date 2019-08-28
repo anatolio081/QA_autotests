@@ -38,7 +38,7 @@ def test_add_product(browser_adm):
     8.Ввести данные в Model
     9.Нажать на кнопку сохранения товара
     10 Получить новое колличество товаров из сноски в правом-нижнем углу
-    Ожидаемый результат:кол-во товаров до меньше кол-ва товаров после
+    Ожидаемый результат:кол-во товаров до добавления меньше кол-ва товаров после
     :param browser_adm:
     :return:
     """
@@ -62,6 +62,7 @@ def test_add_product(browser_adm):
     table_statistic = browser_adm.find_element_by_xpath(AdmProductPage.table_statistic_xpath)
     count_text = table_statistic.text.split()
     count_after = int(count_text[5])
+
     assert count_after > count_before
 
 
@@ -93,8 +94,11 @@ def test_edit_product(browser_adm):
     cells[7].find_element_by_xpath(AdmProductPage.edit_button_xpath).click()
     product_name = browser_adm.find_element_by_id(AdmProductPage.product_name_id)
     product_name.send_keys(Keys.CONTROL + "a")
+    ActionChains(browser_adm).pause(1).perform()  # жду Раскрытие меню каталога
     product_name.send_keys(Keys.BACKSPACE)
+    ActionChains(browser_adm).pause(1).perform()  # жду Раскрытие меню каталога
     product_name.send_keys(legacy_name + TestData.data_edit_postfix)
+    ActionChains(browser_adm).pause(1).perform()  # жду Раскрытие меню каталога
     browser_adm.find_element_by_link_text(AdmProductPage.data_link_text).click()
     model_name = browser_adm.find_element_by_id(AdmProductPage.data_input_model_id)
     model_name.send_keys(Keys.CONTROL + "a")
@@ -121,7 +125,7 @@ def test_del_product(browser_adm):
     6.Нажать на кнопку Удалить
     6.В всплывшем алерте подтвердить удаление товара
     7.Получить измененное колличество товаров из сноски в правом-нижнем углу
-    Ожидаемый результат:счетчик товаров уменьшился на 1
+    Ожидаемый результат: Колличество товаров после удаления меньше колличества товаров до удаления
     :param browser_adm:
     :return:
     """
