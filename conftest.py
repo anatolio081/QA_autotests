@@ -77,7 +77,7 @@ def browser(request):
         chrome_exe_loc = os.path.abspath('/usr/bin/google-chrome-stable')
         chrome_caps = desired_capabilities.DesiredCapabilities.CHROME.copy()
         chrome_opts = options_oper.ChromeOptions()
-        chrome_opts._binary_location=chrome_exe_loc
+        chrome_opts._binary_location = chrome_exe_loc
         driver = webdriver.Chrome(executable_path=chrome_driver_loc, options=chrome_opts,
                                   desired_capabilities=chrome_caps)
     elif browser_param == "firefox":
