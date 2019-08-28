@@ -94,11 +94,8 @@ def test_edit_product(browser_adm):
     cells[7].find_element_by_xpath(AdmProductPage.edit_button_xpath).click()
     product_name = browser_adm.find_element_by_id(AdmProductPage.product_name_id)
     product_name.send_keys(Keys.CONTROL + "a")
-    ActionChains(browser_adm).pause(1).perform()  # жду Раскрытие меню каталога
     product_name.send_keys(Keys.BACKSPACE)
-    ActionChains(browser_adm).pause(1).perform()  # жду Раскрытие меню каталога
     product_name.send_keys(legacy_name + TestData.data_edit_postfix)
-    ActionChains(browser_adm).pause(1).perform()  # жду Раскрытие меню каталога
     browser_adm.find_element_by_link_text(AdmProductPage.data_link_text).click()
     model_name = browser_adm.find_element_by_id(AdmProductPage.data_input_model_id)
     model_name.send_keys(Keys.CONTROL + "a")
