@@ -9,5 +9,7 @@ def test_is_it_opencart(driver_headlessed, url_f):
     :param url_f:
     :return:
     """
+    print("my URL is: "+url_f)
     driver_headlessed.get(url_f)
-    assert "OpenCart" in driver_headlessed.page_source
+    powered_by = driver_headlessed.find_element_by_xpath("/html/body/footer/div/p/a")
+    assert "OpenCart" in powered_by.text

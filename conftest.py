@@ -22,17 +22,49 @@ def pytest_addoption(parser):
         default="firefox",
         help="Browser name"
     )
+    parser.addoption(
+        "--wait",
+        action="store",
+        default=0,
+        help="waiting browser time"
+    )
 
 
-@pytest.fixture(scope="session")
-def url_f(request):
-    """
-    Фикстура для получения url для из опций запуска
-    :param request:
-    :return:
-    """
-    url = request.config.getoption("--url")
-    return url
+@pytest.fixture
+def browser(request):
+    '''
+     фикстура для запуска браузера
+     для домашки по поиску элементов
+     :param request:
+     :return wd: возвращает вебдрайвер
+     '''
+    browser_param = request.config.getoption("--browser")
+    wait_time = request.config.getoption("--wait")
+    if browser_param == "chrome":
+        chrome_driver_loc = os.path.abspath('/usr/bin/chromedriver')
+        chrome_exe_loc = os.path.abspath('/usr/bin/google-chrome-stable')
+        chrome_caps = desired_capabilities.DesiredCapabilities.CHROME.copy()
+        chrome_opts = options_oper.ChromeOptions()
+        chrome_opts._binary_location = chrome_exe_loc
+        driver = webdriver.Chrome(executable_path=chrome_driver_loc, options=chrome_opts,
+                                  desired_capabilities=chrome_caps)
+    elif browser_param == "firefox":
+        driver = webdriver.Firefox()
+    elif browser_param == "opera":
+        opera_driver_loc = os.path.abspath('/usr/bin/operadriver')
+        opera_exe_loc = os.path.abspath('/usr/bin/opera')
+        opera_caps = desired_capabilities.DesiredCapabilities.OPERA.copy()
+        opera_opts = options_oper.ChromeOptions()
+        opera_opts._binary_location = opera_exe_loc
+        driver = webdriver.Chrome(executable_path=opera_driver_loc, options=opera_opts,
+                                  desired_capabilities=opera_caps)
+    else:
+        raise Exception(f"{request.param} is not supported!")
+
+    request.addfinalizer(driver.close)
+    driver.implicitly_wait(wait_time)
+    driver.get(request.config.getoption("--url"))
+    return driver
 
 
 @pytest.fixture(params=["chrome", "safari", "firefox"])
@@ -59,41 +91,6 @@ def parametrized_browser(request):
         raise Exception(f"{request.param} is not supported!")
 
     request.addfinalizer(driver.quit)
-    driver.get(request.config.getoption("--url"))
-    return driver
-
-
-@pytest.fixture
-def browser(request):
-    '''
-     фикстура для запуска браузера
-     для домашки по поиску элементов
-     :param request:
-     :return wd: возвращает вебдрайвер
-     '''
-    browser_param = request.config.getoption("--browser")
-    if browser_param == "chrome":
-        chrome_driver_loc = os.path.abspath('/usr/bin/chromedriver')
-        chrome_exe_loc = os.path.abspath('/usr/bin/google-chrome-stable')
-        chrome_caps = desired_capabilities.DesiredCapabilities.CHROME.copy()
-        chrome_opts = options_oper.ChromeOptions()
-        chrome_opts._binary_location = chrome_exe_loc
-        driver = webdriver.Chrome(executable_path=chrome_driver_loc, options=chrome_opts,
-                                  desired_capabilities=chrome_caps)
-    elif browser_param == "firefox":
-        driver = webdriver.Firefox()
-    elif browser_param == "opera":
-        opera_driver_loc = os.path.abspath('/usr/bin/operadriver')
-        opera_exe_loc = os.path.abspath('/usr/bin/opera')
-        opera_caps = desired_capabilities.DesiredCapabilities.OPERA.copy()
-        opera_opts = options_oper.ChromeOptions()
-        opera_opts._binary_location = opera_exe_loc
-        driver = webdriver.Chrome(executable_path=opera_driver_loc, options=opera_opts,
-                              desired_capabilities=opera_caps)
-    else:
-        raise Exception(f"{request.param} is not supported!")
-
-    request.addfinalizer(driver.close)
     driver.get(request.config.getoption("--url"))
     return driver
 
@@ -131,3 +128,14 @@ def driver_headlessed(request):
         sys.exit(1)
     request.addfinalizer(wd.close)
     return wd
+
+
+@pytest.fixture(scope="session")
+def url_f(request):
+    """
+    Фикстура для получения url для из опций запуска
+    :param request:
+    :return:
+    """
+    url = request.config.getoption("--url")
+    return url
