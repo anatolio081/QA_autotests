@@ -50,17 +50,15 @@ def test_add_product(browser_adm):
     try:
         catalog = WebDriverWait(browser_adm, 5).until(
             EC.presence_of_element_located((By.ID, AdmMainPage.menu_catalog_id)))# ожидаю открытие после логина
-    except (TimeoutException, EC.NoSuchElementException):
-        print("element is not found")
-    finally:
         catalog.click()
+    except (TimeoutException, EC.NoSuchElementException):
+        assert "element is not found"
     try:
         product = WebDriverWait(browser_adm, 5).until(
             EC.element_to_be_clickable((By.LINK_TEXT, AdmMainPage.products_text_link)))# ожидаю раскрытия дроп-бокса для клика
-    except ElementNotInteractableException:
-        print("element is not iteractable")
-    finally:
         product.click()
+    except ElementNotInteractableException:
+        assert "element is not iteractable"
     table_statistic = browser_adm.find_element_by_xpath(AdmProductPage.table_statistic_xpath)
     count_text = table_statistic.text.split()
     count_before = int(count_text[5])
@@ -99,17 +97,16 @@ def test_edit_product(browser_adm):
     try:
         catalog = WebDriverWait(browser_adm, 5).until(
             EC.presence_of_element_located((By.ID, AdmMainPage.menu_catalog_id)))# ожидаю открытие после логина
-    except (TimeoutException, EC.NoSuchElementException):
-        print("element is not found")
-    finally:
         catalog.click()
+    except (TimeoutException, EC.NoSuchElementException):
+        assert "element is not found"
+
     try:
         product = WebDriverWait(browser_adm, 5).until(
             EC.element_to_be_clickable((By.LINK_TEXT, AdmMainPage.products_text_link)))# ожидаю раскрытия дроп-бокса для клика
-    except ElementNotInteractableException:
-        print("element is not iteractable")
-    finally:
         product.click()
+    except ElementNotInteractableException:
+        assert "element is not iteractable"
     tbl = browser_adm.find_element_by_xpath(AdmProductPage.product_table_xpath)
     rows = tbl.find_elements_by_tag_name(AdmProductPage.row_tag)
     cells = rows[0].find_elements_by_tag_name(AdmProductPage.cell_tag)
@@ -153,18 +150,17 @@ def test_del_product(browser_adm):
     try:
         catalog = WebDriverWait(browser_adm, 5).until(
             EC.presence_of_element_located((By.ID, AdmMainPage.menu_catalog_id)))  # ожидаю открытие после логина
-    except (TimeoutException, EC.NoSuchElementException):
-        print("element is not found")
-    finally:
         catalog.click()
+    except (TimeoutException, EC.NoSuchElementException):
+        assert "element is not found"
+
     try:
         product = WebDriverWait(browser_adm, 2).until(
             EC.element_to_be_clickable(
                 (By.LINK_TEXT, AdmMainPage.products_text_link)))  # ожидаю раскрытия дроп-бокса для клика
-    except ElementNotInteractableException:
-        print("element is not iteractable")
-    finally:
         product.click()
+    except ElementNotInteractableException:
+        assert "element is not iteractable"
     table_statistic = browser_adm.find_element_by_xpath(AdmProductPage.table_statistic_xpath)
     count_text = table_statistic.text.split()
     count_before = int(count_text[5])
@@ -183,10 +179,9 @@ def test_del_product(browser_adm):
         catalog = WebDriverWait(browser_adm, 2).until(
             EC.element_to_be_clickable((By.ID,
                                         AdmMainPage.menu_catalog_id)))  # ожидаю возможность взаимодействия с кнопкой каталога, после алерта
-    except (TimeoutException, EC.NoSuchElementException):
-        print("element is not iteractable")
-    finally:
         catalog.click()
+    except (TimeoutException, EC.NoSuchElementException):
+        assert "element is not iteractable"
     browser_adm.find_element_by_link_text(AdmMainPage.products_text_link).click()
     table_statistic = browser_adm.find_element_by_xpath(AdmProductPage.table_statistic_xpath)
     count_text = table_statistic.text.split()
