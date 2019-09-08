@@ -1,4 +1,7 @@
 class AdmMainPage:
-    catalog = "product-thumb"
-    menu_catalog_id = "menu-catalog"
-    products_text_link = "Products"
+    class Navigation:
+        it = {"id": "navigation"}
+
+        class Catalog:
+            it = {"id": "menu-catalog"}
+            products_text_link = {"text_link": "Products"}

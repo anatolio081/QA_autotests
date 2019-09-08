@@ -1,18 +1,23 @@
 class AdmProductPage:
-    add_button_xpath = "//a[@data-original-title='Add New']"
-    save_button_xpath = "//button[@data-original-title='Save']"
-    delete_button_xpath = "//button[@data-original-title='Delete']"
-    edit_button_xpath = "//a[@data-original-title='Edit']"
-    product_table_xpath = "//table[@class='table table-bordered table-hover']//tbody"
-    table_statistic_xpath = "//div[@class='col-sm-6 text-right']"
+    class TopRightButtons:
+        it = {'class': 'pull-right'}
+        add_button_xpath = {"xpath": "//a[@data-original-title='Add New']"}
+        delete_button_xpath = {"xpath": "//button[@data-original-title='Delete']"}
+        save_button_xpath = {"xpath": "//button[@data-original-title='Save']"}
 
-    product_name_id = "input-name1"
-    product_meta_id = "input-meta-title1"
-    filter_input_id = "input-name"
-    filter_button_id = "button-filter"
-    data_input_model_id = "input-model"
+    class ProductList:
+        it = {"xpath": "//table[@class='table table-bordered table-hover']//tbody"}
+        edit_button_xpath = {"xpath": "//a[@data-original-title='Edit']"}
+        row_tag = {"tag": "tr"}
+        cell_tag = {"tag": "td"}
+        product_statistic_xpath = {"xpath": "//div[@class='col-sm-6 text-right']"}
 
-    data_link_text = "Data"
+    class Filter:
+        filter_input_id = {"id": "input-name"}
+        filter_button_id = {"id": "button-filter"}
 
-    row_tag = "tr"
-    cell_tag = "td"
+    class ProductPage:
+        product_name_id = {"id": "input-name1"}
+        product_meta_id = {"id": "input-meta-title1"}
+        data_input_model_id = {"id": "input-model"}
+        data_link_text = {"link_text": "Data"}

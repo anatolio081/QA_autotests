@@ -3,7 +3,7 @@ from locators.MainPage import MainPage
 from locators.SearchPage import SearchPage
 from locators.ProductPage import ProductPage
 from locators.RegisterPage import RegisterPage
-from locators.AdmMainPage import CatalogPage
+
 
 
 def test_search(browser):
@@ -17,13 +17,13 @@ def test_search(browser):
     :param browser:
     :return:
     """
-    test_data = "MacBook"
+    test_data = "БАГЕТ"
     input_box = browser.find_element_by_class_name(MainPage.search_input_class_name)
     input_box.send_keys(test_data)
     browser.find_element_by_class_name(MainPage.search_button_class_name).click()
     found_search_elms = browser.find_elements_by_class_name(SearchPage.search_div_elems_class_name)
     for elm in found_search_elms:
-        caption = elm.find_element_by_class_name(CatalogPage.catalog_class_name)
+        caption = elm.find_element_by_class_name("caption")
         assert test_data in caption.find_element_by_tag_name("a").text
 
 
