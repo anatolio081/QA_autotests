@@ -8,7 +8,9 @@ from selenium.webdriver.common.keys import Keys
 from locators.AdmMainPage import AdmMainPage
 from locators.AdmProductPage import AdmProductPage
 from locators.AdminLoginPage import AdminLoginPage
-from Data.TestData import TestData
+from Data.StaticTestData import TestData
+from utils.generator import get_test_data
+from utils.generator import TestDataDB
 import pytest
 
 
@@ -31,7 +33,7 @@ def browser_adm(request, browser):
 def test_add_product(browser_adm):
     """
     Тест на добавление нового товара
-    Предусловия:Товар из Data/TestData.py отсутствует в каталоге
+    Предусловия:Товар из Data/StaticTestData.py отсутствует в каталоге
     Шаги:
     1.Раскрыть левое меню 'Catalog'
     2.Нажать на кнопку 'Products'
@@ -47,6 +49,7 @@ def test_add_product(browser_adm):
     :param browser_adm:
     :return:
     """
+    data = get_test_data()
     try:
         catalog = WebDriverWait(browser_adm, 5).until(
             EC.presence_of_element_located((By.ID, AdmMainPage.menu_catalog_id)))# ожидаю открытие после логина
@@ -64,12 +67,12 @@ def test_add_product(browser_adm):
     count_before = int(count_text[5])
     browser_adm.find_element_by_xpath(AdmProductPage.add_button_xpath).click()
     product_name = browser_adm.find_element_by_id(AdmProductPage.product_name_id)
-    product_name.send_keys(TestData.data_product_name)
+    product_name.send_keys(data.product_name)
     product_meta = browser_adm.find_element_by_id(AdmProductPage.product_meta_id)
-    product_meta.send_keys(TestData.data_meta_name)
+    product_meta.send_keys(data.meta)
     browser_adm.find_element_by_link_text(AdmProductPage.data_link_text).click()
     input_model = browser_adm.find_element_by_id(AdmProductPage.data_input_model_id)
-    input_model.send_keys(TestData.data_model_name)
+    input_model.send_keys(data.model)
     browser_adm.find_element_by_xpath(AdmProductPage.save_button_xpath).click()
     table_statistic = browser_adm.find_element_by_xpath(AdmProductPage.table_statistic_xpath)
     count_text = table_statistic.text.split()
