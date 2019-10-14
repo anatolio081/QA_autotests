@@ -6,9 +6,9 @@ from selenium.common.exceptions import ElementNotInteractableException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.keys import Keys
-from locators.AdmMainPage import AdmMainPage
-from locators.AdmProductPage import AdmProductPage
-from locators.AdminLoginPage import AdminLoginPage
+from locators.admin.AdmMainPage import AdmMainPage
+from locators.admin.AdmProductPage import AdmProductPage
+from locators.admin.AdmLoginPage import AdminLoginPage
 from Data.StaticTestData import TestData
 from utils.generator import get_test_data
 
@@ -31,7 +31,7 @@ def browser_adm(request, browser):
     user_pass_input = browser.find_element_by_id(AdminLoginPage.password_id['id'])
     user_pass_input.send_keys(TestData.password)
     # Авторизоваться
-    browser.find_element_by_xpath(AdminLoginPage.login_button_xpath['xpath']).click()
+    browser.find_element_by_xpath(AdminLoginPage.login_button_class['class']).click()
     return browser
 
 

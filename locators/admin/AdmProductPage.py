@@ -1,4 +1,4 @@
-class AdmProductPage:
+class AdmProductPage():
     class TopRightButtons:
         it = {'class': 'pull-right'}
         add_button_xpath = {"xpath": "//a[@data-original-title='Add New']"}

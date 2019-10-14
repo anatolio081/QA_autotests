@@ -1,4 +1,5 @@
 class TestData:
+    search_data = "БАГЕТ"
     data_product_name = "МЦСТ-БАГЕТ 3000"
     data_meta_name = "baguiette"
     data_model_name = "модель 3000"

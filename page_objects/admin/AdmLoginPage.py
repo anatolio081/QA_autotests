@@ -1,0 +1,2 @@
+class AdmLoginPage:
+    pass

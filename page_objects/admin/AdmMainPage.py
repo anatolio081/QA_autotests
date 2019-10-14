@@ -1,0 +1,2 @@
+class AdmMainPage:
+    pass
